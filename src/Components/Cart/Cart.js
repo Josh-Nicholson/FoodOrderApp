@@ -1,11 +1,17 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import CartContext from '../../store/cart-context';
 import Modal from '../UI/Modal';
 import classes from './Cart.module.css';
+import CartForm from './CartForm';
 import CartItem from './CartItem';
 
 const Cart = (props) => {
 	const context = useContext(CartContext);
+
+	const [isCheckedOut, setIsCheckOut] = useState(false);
+	const [isOrderComplete, setIsOrderComplete] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState(null);
 
 	const totalAmount = `$${context.totalAmount.toFixed(2)}`;
 	const hasItems = context.items.length > 0;
@@ -16,6 +22,44 @@ const Cart = (props) => {
 	const cartItemRemoveHandler = (id) => {
 		context.removeItem(id);
 	};
+
+	const checkoutButtonClickHandler = () => {
+		setIsCheckOut(true);
+	};
+
+	const backButtonClickHandler = () => {
+		setIsCheckOut(false);
+	};
+
+	async function orderSubmitHandler(orderDetails) {
+		setIsLoading(true);
+		setError(null);
+
+		const jsonToSave = {
+			customerDetails: { ...orderDetails },
+			cartItems: { ...context.items }
+		};
+		console.log('Submitting order to api');
+		try {
+			const response = fetch('https://react-http-a82d2-default-rtdb.europe-west1.firebasedatabase.app/orders.json', {
+				method: 'POST',
+				body: JSON.stringify(jsonToSave),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+			if (!response.ok) {
+				throw new Error('Something went wrong!');
+			}
+			console.log('Successfully saved new order to api');
+		} catch (error) {
+			setError(error.message);
+		}
+		setIsLoading(false);
+		setIsCheckOut(false);
+		setIsOrderComplete(true);
+		context.reset();
+	}
 
 	const cartItems = (
 		<ul className={classes['cart-items']}>
@@ -34,17 +78,33 @@ const Cart = (props) => {
 
 	return (
 		<Modal onClose={props.onClose}>
-			{cartItems}
-			<div className={classes.total}>
-				<span>Total Amount</span>
-				<span>{totalAmount}</span>
-			</div>
-			<div className={classes.actions}>
-				<button className={classes['button--alt']} onClick={props.onClose}>
-					Close
-				</button>
-				{hasItems && <button className={classes.button}>Order</button>}
-			</div>
+			{error && <h1>{error}</h1>}
+			{isLoading && <h1>Submitting Order...</h1>}
+			{!isLoading && !isCheckedOut && !isOrderComplete && (
+				<>
+					{cartItems}
+					<div className={classes.total}>
+						<span>Total Amount</span>
+						<span>{totalAmount}</span>
+					</div>
+					<div className={classes.actions}>
+						<button className={classes['button--alt']} onClick={props.onClose}>
+							Close
+						</button>
+						{hasItems && (
+							<button className={classes.button} onClick={checkoutButtonClickHandler}>
+								Checkout
+							</button>
+						)}
+					</div>
+				</>
+			)}
+			{!isLoading && isCheckedOut && <CartForm onBackButtonClick={backButtonClickHandler} onOrderSubmit={orderSubmitHandler} />}
+			{!isLoading && isOrderComplete && (
+				<>
+					<h1>Order successful!</h1>
+				</>
+			)}
 		</Modal>
 	);
 };

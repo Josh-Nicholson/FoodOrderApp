@@ -41,7 +41,7 @@ const Cart = (props) => {
 		};
 		console.log('Submitting order to api');
 		try {
-			const response = fetch('https://react-http-a82d2-default-rtdb.europe-west1.firebasedatabase.app/orders.json', {
+			const response = await fetch('https://react-http-a82d2-default-rtdb.europe-west1.firebasedatabase.app/orders.json', {
 				method: 'POST',
 				body: JSON.stringify(jsonToSave),
 				headers: {
@@ -52,6 +52,7 @@ const Cart = (props) => {
 				throw new Error('Something went wrong!');
 			}
 			console.log('Successfully saved new order to api');
+			setError(null);
 		} catch (error) {
 			setError(error.message);
 		}

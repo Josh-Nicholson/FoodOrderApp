@@ -3,7 +3,7 @@ import useInput from '../../Hooks/use-input';
 
 import classes from './CartForm.module.css';
 
-const CartForm = (props) => {
+const CartCheckoutForm = (props) => {
 	const {
 		value: firstNameInputValue,
 		isValid: firstNameInputIsValid,
@@ -232,4 +232,4 @@ const CartForm = (props) => {
 	);
 };
 
-export default CartForm;
+export default CartCheckoutForm;

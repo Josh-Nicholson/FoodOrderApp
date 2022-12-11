@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import CartContext from '../../store/cart-context';
 import Modal from '../UI/Modal';
 import classes from './Cart.module.css';
-import CartForm from './CartForm';
+import CartCheckoutForm from './CartCheckoutForm';
 import CartItem from './CartItem';
 
 const Cart = (props) => {
@@ -100,7 +100,7 @@ const Cart = (props) => {
 					</div>
 				</>
 			)}
-			{!isLoading && isCheckedOut && <CartForm onBackButtonClick={backButtonClickHandler} onOrderSubmit={orderSubmitHandler} />}
+			{!isLoading && isCheckedOut && <CartCheckoutForm onBackButtonClick={backButtonClickHandler} onOrderSubmit={orderSubmitHandler} />}
 			{!isLoading && isOrderComplete && (
 				<>
 					<h1>Order successful!</h1>

@@ -59,7 +59,7 @@ const Cart = (props) => {
 		setIsLoading(false);
 		setIsCheckOut(false);
 		setIsOrderComplete(true);
-		context.reset();
+		context.clearCart();
 	}
 
 	const cartItems = (

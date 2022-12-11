@@ -77,35 +77,44 @@ const Cart = (props) => {
 		</ul>
 	);
 
+	const cartOverview = (
+		<>
+			{cartItems}
+			<div className={classes.total}>
+				<span>Total Amount</span>
+				<span>{totalAmount}</span>
+			</div>
+			<div className={classes.actions}>
+				<button className={classes['button--alt']} onClick={props.onClose}>
+					Close
+				</button>
+				{hasItems && (
+					<button className={classes.button} onClick={checkoutButtonClickHandler}>
+						Checkout
+					</button>
+				)}
+			</div>
+		</>
+	);
+
+	const checkoutComplete = (
+		<>
+			<h1>Order successful!</h1>
+			<div className={classes.actions}>
+				<button className={classes['button--alt']} onClick={props.onClose}>
+					Close
+				</button>
+			</div>
+		</>
+	);
+
 	return (
 		<Modal onClose={props.onClose}>
 			{error && <h1>{error}</h1>}
 			{isLoading && <h1>Submitting Order...</h1>}
-			{!isLoading && !isCheckedOut && !isOrderComplete && (
-				<>
-					{cartItems}
-					<div className={classes.total}>
-						<span>Total Amount</span>
-						<span>{totalAmount}</span>
-					</div>
-					<div className={classes.actions}>
-						<button className={classes['button--alt']} onClick={props.onClose}>
-							Close
-						</button>
-						{hasItems && (
-							<button className={classes.button} onClick={checkoutButtonClickHandler}>
-								Checkout
-							</button>
-						)}
-					</div>
-				</>
-			)}
+			{!isLoading && !isCheckedOut && !isOrderComplete && cartOverview}
 			{!isLoading && isCheckedOut && <CartCheckoutForm onBackButtonClick={backButtonClickHandler} onOrderSubmit={orderSubmitHandler} />}
-			{!isLoading && isOrderComplete && (
-				<>
-					<h1>Order successful!</h1>
-				</>
-			)}
+			{!isLoading && isOrderComplete && checkoutComplete}
 		</Modal>
 	);
 };

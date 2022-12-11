@@ -129,10 +129,6 @@ const CartCheckoutForm = (props) => {
 		resetCardNumberInput();
 		resetExpiryDateInput();
 		resetCvvInput();
-		//check validity of inputs
-		//if invalid show errors
-		//if valid submit form (console log order has been submitted)
-		//eventually get api call to backend
 	};
 
 	const firstNameInputClasses = firstNameInputHasError ? `${classes['form-control']} ${classes.invalid}` : classes['form-control'];
